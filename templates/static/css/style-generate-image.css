@@ -1,0 +1,316 @@
+body {
+    background-image: url("../../../../Users/carlo/PycharmProjects/djangoProject/static/css/Content/main-background.jpg");
+    background-size: cover;
+}
+
+#container {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.img {
+    height: 100px;
+    width: 100px;
+}
+
+/* SECTION Form */
+#form {
+    display: flex;
+}
+
+.frame {
+    display: flex;
+    height: 767px;
+    width: 482.3px;
+    position: relative;
+}
+
+.frame::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("../../../../Users/carlo/PycharmProjects/djangoProject/static/css/Content/frame.png");
+    background-size: cover;
+    background-position: bottom;
+    z-index: -1;
+    opacity: 0.9;
+}
+
+.form-forge{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
+    width: 482.29px;
+    padding: 0 40px 0 40px;
+}
+
+input, textarea, select, button, label {
+    border: none;
+    outline: none;
+    font-size: 20px;
+    padding: 5px;
+}
+
+input, textarea, select, button {
+    background-color: var(--black);
+}
+
+input, textarea, select, button, textarea {
+    border: solid var(--border-yellow);
+    border-width: 0 1px 1px 0;
+}
+
+input#weapon-color{
+    padding: 0;
+    background-color: transparent;
+    border: none;
+    height: 40px;
+}
+
+.pick-color {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+::placeholder, .option-disabled{
+    opacity: .6;
+}
+
+input, label, textarea, select, button, input::placeholder, textarea::placeholder  {
+  color: var(--yellow);
+}
+
+textarea {
+    background-color: var(--black) ;
+    width: 400px;
+    resize: none;
+}
+
+option {
+    background-color: var(--black) ;
+}
+
+/* Cor de fundo do autocomplete */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 30px var(--black) inset;
+}
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: var(--yellow) !important;
+}
+
+/* Usando absolute no botão forge */
+.btn-submit {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-image {
+    width: 250px;
+}
+
+.btn-image, .btn-forge {
+    position: absolute;
+    margin-top: 60px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+
+/* SECTION Forge */
+#forge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    gap: 50px;
+    color: black;
+}
+
+.card-background{
+    height: 700px;
+    width: 390px;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    background-size: cover;
+    animation: frameOreChange 20s ease-in-out infinite;
+}
+
+.card {
+    width: 360px;
+    height: 670px;
+    border-radius: 20px;
+    color: white;
+    background-color: var(--black);
+    /* opacity: 0.95; */
+    position: relative;
+}
+
+.generated-img, .card-img {
+    height: 360px;
+    width: 360px;
+}
+.card-img {
+    position: relative;
+    background-color: black;
+    animation: colorChange 20s linear infinite;
+}
+
+.generated-img {
+    display: none;
+}
+
+.card-img > small {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 150px;
+}
+
+.card-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px 10px 30px;
+}
+
+.card-header p {
+    align-items: center;
+}
+
+.card-rarity {
+    display: none;
+}
+
+.card-footer {
+   display: flex;
+   flex-direction: column;
+   gap: 22px;
+}
+
+.card-type-id {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 16px;
+}
+
+.status-and-power {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.card-power {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #60B2FF;
+    background: rgba(33, 140, 239, 0.12);
+    padding: 8px;
+}
+
+.card-power-title {
+    display: flex;
+    justify-content: center;
+}
+
+.star-icon {
+    height: 30px;
+}
+
+.power-title, .power-number {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.91) 0%, #60B2FF 64.5%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.power-title {
+    font-size: 20px;
+    line-height: normal;
+}
+
+.power-number {
+    font-size: 25px;
+    text-align: center;
+}
+
+ul.status-list-generated, ul.status-list  {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    height: 66px;
+    justify-content: start;
+    gap: 7px;
+}
+
+ul.status-list-generated {
+    display: none;
+}
+
+ul.status-list {
+}
+
+.status-and-power {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-and-power, .card-description {
+    margin: 0 20px 0 20px;
+}
+
+.card-description {
+    padding: 12px;
+    font-size: 12px;
+    background-color: #2C2C2C;
+    border-radius: 4px;
+    height: 80px;
+    text-align: justify;
+    line-height: 10pt;
+}
+
+.card-serie-number {
+    font-size: 8px;
+    margin-top: -15px;
+    text-align: center;
+}
+
+.ore-icon {
+    height: 15px;
+    margin-right: 2px;
+}
+
+.ore-icon-header {
+    margin-left: 8px
+}
+
+
+@media (max-width: 1000px) {
+    #container {
+        flex-wrap: wrap;
+        gap: 80px;
+        padding: 42px;
+        height: 100%;
+    }
+    body {
+        background-image: url("../../../../Users/carlo/PycharmProjects/djangoProject/static/css/Content/main-background-small.jpg");
+    }
+}
+
