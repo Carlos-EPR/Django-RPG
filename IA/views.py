@@ -1,4 +1,11 @@
 import os
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as login_django
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+
+from django.http import HttpResponse
 
 from IA.full_power import full_power
 import base64
@@ -13,6 +20,42 @@ from django.shortcuts import render
 import requests
 
 
+def cadastro(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')
+    else:
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        user = User.objects.filter(username=username).first()
+
+        if user:
+            return HttpResponse('Já existe um usuário com esse username')
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+
+        return redirect('/login/')
+
+
+def login(request):
+    if request.method == 'GET':
+        return render(request, 'login.html')
+    else:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+
+        if user:
+            login_django(request, user)
+            return redirect("/generate/")
+        else:
+            return HttpResponse('Senha e/ou user incorretos')
+
+
+@login_required(login_url='/login/')
 def generate_image(request):
     if request.method == 'GET':
         return render(request, 'index.html')
@@ -39,7 +82,7 @@ def generate_image(request):
             messages=[
                 {"role": "system",
                  "content": prompt + "\nAfter creating the weapon description, "
-                                     "Summarize the description in just 1 paragraph with a maximum of 50 tokens"},
+                                     "Summarize the description in just 1 paragraph with a maximum of 45 tokens"},
             ],
             model="gpt-3.5-turbo",
         )
@@ -71,8 +114,8 @@ def generate_image(request):
             byte_stream = BytesIO()
             img.save(byte_stream, format='PNG')
             byte_stream.seek(0)
-
-            power_color, final_status, color_back, rarity_card, status, rarity_status, value_status = full_power()
+            
+            power_color, final_status, color_back, rarity_card, status, rarity_status = full_power()
             weapon_suf = weapon_type[0] + weapon_type[1]
             serial_number_weapon = f"{weapon_suf}-000.001"
             type_weapon = f"[{weapon_type} - {status}]"
