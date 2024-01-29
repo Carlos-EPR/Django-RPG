@@ -1,7 +1,15 @@
-Nome do Projeto
+# RPG Forger
+This project is an RPG card generator that connects to two APIs: Segmind and OpenAI.
 
-Descrição curta do projeto.
+The generated cards are divided into 3 categories: Weapon, Potion, and Armor. Each 
+category has various different types, capable of generating a variety of unique items.
 
+#### Card Forging Screen
+![Card Forging Screen](README/forger.png)
+#### Forged Card Result
+![Forged Card Result](README/forger_result.png)
+
+<!--
 Sumário
 Instalação
 Como usar
@@ -10,8 +18,7 @@ Licença
 Instalação
 Forneça instruções claras sobre como instalar e configurar o seu projeto. Inclua dependências e requisitos de sistema, se necessário.
 
-bash
-Copy code
+
 # Exemplo de comandos de instalação
 npm install
 Como usar
@@ -33,3 +40,4 @@ Licença
 Indique a licença do seu projeto. Certifique-se de escolher uma licença que seja apropriada para o seu projeto.
 
 MIT License
+-->
