@@ -6,12 +6,28 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/global.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/header.css' %}">
+
+    <link rel="shortcut icon" href="{% static 'content/img/icon.png' %}">
     <title>{% block title %} {% endblock %}</title>
+
+    <!--
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script>
+       $(document).ready(function() {
+            $('.nav-links li a').on('click', function() {
+                $('.nav-links li a').removeClass('link-selected');
+                $(this).addClass('link-selected');
+            });
+        });
+        }
+    </script>
+    -->
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="" alt="Logo image">
+            <img src="{% static 'content/img/icon.png' %}" alt="Logo image">
             <h1>RPG Forger</h1>
         </div>
         <div class="header-links">
@@ -20,6 +36,12 @@
                     <li><a class="link-select" href="">Home</a></li>
                     <li><a class="link-select" href="/generate">Forge</a></li>
                     <li><a class="link-select link-selected" href="/login">Log in</a></li>
+                    <li>
+                        <form method="POST" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button type="submit">Logout</button>
+                        </form>
+                    </li>
                 </ul>
             </nav>
             <div class="language">
@@ -41,7 +63,3 @@
 
 </body>
 </html>
-
-
-
-
