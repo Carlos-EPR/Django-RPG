@@ -1,13 +1,49 @@
 {% extends 'header.html' %}
 {% load static %}
-{% load i18n %}
 
-{% block title %}Forge{% endblock %}
+{% block title %}RPG Forger | Forge{% endblock %}
+
+{% block header %}
+<!-- Se o usuário estiver autenticado -->
+    {% if user_authenticated %}
+    <!-- Adicione os elementos específicos para usuários autenticados aqui -->
+    <!-- Por exemplo, adicione um link para o perfil do usuário e um botão de logout -->
+    <li><a class="link-select li-inventory" href="/inventory">Inventory</a></li>
+    <li class="dropdown-container">
+        <button class="link-select username"> Username-BR</button>
+    <li class="dropdown-container">
+        <button class="link-select username"> Username-BR</button>
+        <ul class="username-dropdown">
+            <li>
+                <button type="submit" class="btn-edit-profile btn-dropdown">
+                    <img class="temporary-img" src="{% static '/content/img/settings.png' %}" alt="Edit profile icon">
+                    Edit profile
+                </button>
+            </li>
+            <li>
+                <form method="POST" action="{% url 'logout' %}" class="link-select form-logout">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout btn-dropdown">
+                        <img class="temporary-img" src="{% static '/content/img/logout.png' %}" alt="Logout icon">
+                        Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </li>
+    {% else %}
+    <!-- Se o usuário não estiver autenticado -->
+    <!-- Adicione os elementos específicos para usuários não autenticados aqui -->
+    <li><a class="link-select link-selected" href="/login">Log in</a></li>
+    {% endif %}
+{% endblock %}
+
 
 {% block content %}
     <head>
         {{ block.super }}
         <link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'css/card-style.css' %}">
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <!--
         <script>
@@ -42,7 +78,7 @@
     -->
     </head>
 
-    <main id="container" class="box">
+    <main class="box">
         <section id="form">
             <div class="frame">
                 <form method="POST" class="form-forge" id="form-forge" onsubmit="">
@@ -96,7 +132,6 @@
 
                     <textarea id="weapon-description" name="weapon-description" rows="3" cols="40"
                               placeholder="Enter your weapon description (optional)"></textarea>
-
 
                     <button type="submit" class="btn-main" id="btn-forge">Forge</button>
 

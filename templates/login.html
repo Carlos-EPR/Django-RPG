@@ -3,6 +3,41 @@
 
 {% block title %}Login{% endblock %}
 
+{% block header %}
+<!-- Se o usuário estiver autenticado -->
+    {% if user_authenticated %}
+    <!-- Adicione os elementos específicos para usuários autenticados aqui -->
+    <!-- Por exemplo, adicione um link para o perfil do usuário e um botão de logout -->
+    <li><a class="link-select li-inventory" href="/inventory">Inventory</a></li>
+    <li class="dropdown-container">
+        <button class="link-select username"> Username-BR</button>
+    <li class="dropdown-container">
+        <button class="link-select username"> Username-BR</button>
+        <ul class="username-dropdown">
+            <li>
+                <button type="submit" class="btn-edit-profile btn-dropdown">
+                    <img class="temporary-img" src="{% static '/content/img/settings.png' %}" alt="Edit profile icon">
+                    Edit profile
+                </button>
+            </li>
+            <li>
+                <form method="POST" action="{% url 'logout' %}" class="link-select form-logout">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout btn-dropdown">
+                        <img class="temporary-img" src="{% static '/content/img/logout.png' %}" alt="Logout icon">
+                        Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </li>
+    {% else %}
+    <!-- Se o usuário não estiver autenticado -->
+    <!-- Adicione os elementos específicos para usuários não autenticados aqui -->
+    <li><a class="link-select link-selected" href="/login">Log in</a></li>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <head>
         {{ block.super }}
@@ -25,6 +60,30 @@
                 $("#signup-form").removeClass("invisible");
             }
         </script>
+        <script>
+            $(document).ready(function() {
+                $("#signup-form").submit(function(event) {
+                    var email = $("#email-signup").val();
+                    if (!validateEmail(email)) {
+                        alert("Please enter a valid email address.");
+                        event.preventDefault();
+                    }
+                });
+
+                $("#login-form").submit(function(event) {
+                    var emailOrUsername = $("#username-login").val();
+                    if (emailOrUsername.trim() === "") {
+                        alert("Please enter your username or email.");
+                        event.preventDefault();
+                    }
+                });
+            });
+
+            function validateEmail(email) {
+                var re = /\S+@\S+\.\S+/;
+                return re.test(email);
+            }
+        </script>
     </head>
 
     <main>
@@ -43,14 +102,14 @@
                     <input type="text" id="username-signup" name="username" placeholder="Username" required>
                     <input type="email" id="email-signup" name="email" placeholder="Email" required>
                     <input type="password" id="password-signup" name="password" placeholder="Password" required>
-                    <input type="submit" value="Create"  class="btn-main">
+                    <input type="submit" value="Create "  class="btn-main">
                 </form>
                 <form action="{% url 'login' %}" method="POST" id="login-form">
                     {% csrf_token %}
                     <h1>Enter your account</h1>
                     <input type="text" id="username-login" name="username" placeholder="Username or email" required>
                     <input type="password" id="password-login" name="password" placeholder="Password" required>
-                    <input type="submit" value="Enter" class="btn-main">
+                    <input type="submit" value="Enter"  class="btn-main">
                 </form>
 
             </section>

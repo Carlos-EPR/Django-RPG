@@ -1,0 +1,192 @@
+{% extends 'header.html' %}
+{% load static %}
+
+{% block title %}Inventory{% endblock %}
+
+{% block header %}
+<!-- Se o usuário estiver autenticado -->
+    {% if user_authenticated %}
+    <!-- Adicione os elementos específicos para usuários autenticados aqui -->
+    <!-- Por exemplo, adicione um link para o perfil do usuário e um botão de logout -->
+    <li><a class="link-select li-inventory" href="/inventory">Inventory</a></li>
+    <li class="dropdown-container">
+        <button class="link-select username"> Username-BR</button>
+    <li class="dropdown-container">
+        <button class="link-select username"> Username-BR</button>
+        <ul class="username-dropdown">
+            <li>
+                <button type="submit" class="btn-edit-profile btn-dropdown">
+                    <img class="temporary-img" src="{% static '/content/img/settings.png' %}" alt="Edit profile icon">
+                    Edit profile
+                </button>
+            </li>
+            <li>
+                <form method="POST" action="{% url 'logout' %}" class="link-select form-logout">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout btn-dropdown">
+                        <img class="temporary-img" src="{% static '/content/img/logout.png' %}" alt="Logout icon">
+                        Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </li>
+    {% else %}
+    <!-- Se o usuário não estiver autenticado -->
+    <!-- Adicione os elementos específicos para usuários não autenticados aqui -->
+    <li><a class="link-select link-selected" href="/login">Log in</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<head>
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/card-style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/inventory.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Manipula o clique nos botões de filtro
+            $('.filter-button').click(function (e) {
+                e.preventDefault();
+                var filterValue = $(this).data('filter');
+
+                // Envia uma requisição AJAX para a view Django com o filtro selecionado
+                $.ajax({
+                    url: '/inventory/filter_' + filterValue,  // Substitua pela URL da sua view Django
+                    type: 'GET',
+                    data: {filter: filterValue},
+
+                    success: function () {
+                        // Atualiza a lista de cards filtrados na div 'inventory-list-cards'
+                        window.location.href = '/inventory/filter_' + filterValue;
+                        //$('.inventory-list-cards').html(data);
+
+                    },
+                    error: function () {
+                        alert('Erro ao carregar os cards filtrados.');
+                    }
+                });
+            });
+        });
+
+    </script>
+</head>
+
+<main>
+    <section class="section-bestcard">
+        <p class="phrase">Your best card is:</p>
+        <section class="bestcard">
+            <div class="card-background"
+                 style="background-image: url('{% static 'content/frame-ores/'|add:best_card.rarity|add:'.png' %}'); animation: {{ none }};">
+                <div class="card">
+                    <div class="card-header">
+                        <h1>{{ best_card.name }}</h1>
+
+                        <p class="card-rarity" style="display: block">
+                            {{ best_card.rarity }}
+                            <img class="ore-icon ore-icon-header"
+                                 src="{% static 'content/img-ores/ore-'|add:best_card.rarity|add:'.png '%}"
+                                 style="animation: {{ none }};">
+                        </p>
+                    </div>
+                    <div class="card-img">
+                        <img class="generated-img" style="display: block"
+                             src="data:image/png;base64,{{ best_image_base64 }}" alt="Generated image">
+                    </div>
+                    <div class="card-footer">
+                        <div class="card-type-id">
+                            <p>[ {{ best_card.type }} - {{ best_card.status_card }} ]</p>
+                        </div>
+                        <div class="status-and-power">
+                            <ul class="status-list-generated" style="display: flex">
+                                {% for s in status %}
+                                <li>
+                                    <img class="ore-icon"
+                                         src="{% static 'content/img-ores/ore-'|add:s.rarity|add:'.png' %}">
+                                    {{ s.attribute }} - {{ s.stats }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            <div class="card-power"
+                                 style="background: rgba({{ power_color }} 0.12); border: 1px solid {{ color_back }};">
+                                <div class="card-power-title">
+                                    <h2 class="power-title" style="
+                                                    background: linear-gradient(180deg, rgba(255, 255, 255, 0.91) 0%, {{ color_back }} 64.5%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                        Power</h2>
+                                    <img class="star-icon" src="{% static 'content/img/star.png' %}">
+                                </div>
+                                <p class="power-number"
+                                   style="background: linear-gradient(180deg, rgba(255, 255, 255, 0.91) 0%, {{ color_back }} 64.5%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                                    {{ best_card.power }}</p>
+                            </div>
+                        </div>
+                        <div class="card-description">
+                            <p>
+                                <strong>Description:</strong>
+                                {{ best_card.description }}
+                            </p>
+                        </div>
+
+                        <div class="card-serie-number">
+                            <p>{{ best_card.serial }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        </div>
+        <p class="phrase">Congratulations!</p>
+    </section>
+
+    <section class="section-inventory">
+        <div class="inventory">
+
+            <div class="inventory-header">
+                <h2>Inventory</h2>
+            </div>
+            <div class="inventory-body">
+                <div class="inventory-filters">
+                    <ul class="inventory-groupby">
+                        <li>
+                            <button class="icon-filter filter-button megazord" data-filter="all"></button>
+                        </li>
+                        <li>
+                            <button class="icon-filter filter-button weapon" data-filter="weapon"></button>
+                        </li>
+                        <li>
+                            <button class="icon-filter filter-button potion" data-filter="potion"></button>
+                        </li>
+                        <li>
+                            <button class="icon-filter filter-button armor" data-filter="armor"></button>
+                        </li>
+                    </ul>
+                    <ul class="inventory-orderby">
+                        <li>
+                            <button class="icon-filter opal"></button>
+                        </li>
+                        <li>
+                            <button class="icon-filter star"></button>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="inventory-cards">
+                    <ul class="inventory-list-cards">
+
+                        {% for card in card_data_list %}
+                        {% with image_base64=card.image_base64 %}
+
+                        {% include 'mini_card_template.html' with card=card %}
+
+                        {% endwith %}
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>
+{% endblock %}
