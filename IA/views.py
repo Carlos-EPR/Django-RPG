@@ -25,7 +25,12 @@ from IA.full_power_inventory import full_power_inventory
 def cadastro(request):
     if request.method == 'GET':
         user_authenticated = request.user.is_authenticated
-        return render(request, 'login.html', {'user_authenticated': user_authenticated})
+        user_name = User.objects.get(pk=request.user.id)
+        context = {
+            'user_authenticated': user_authenticated,
+            'user_name': user_name
+        }
+        return render(request, 'login.html', context)
     else:
         username = request.POST.get('username')
         email = request.POST.get('email')
@@ -45,7 +50,10 @@ def cadastro(request):
 def login(request):
     if request.method == 'GET':
         user_authenticated = request.user.is_authenticated
-        return render(request, 'login.html', {'user_authenticated': user_authenticated})
+        context = {
+            'user_authenticated': user_authenticated,
+        }
+        return render(request, 'login.html', context)
     else:
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -66,7 +74,20 @@ def logout(request):
 
 def home(request):
     user_authenticated = request.user.is_authenticated
-    return render(request, 'home.html', {'user_authenticated': user_authenticated})
+
+    if user_authenticated:
+        user_name = User.objects.get(pk=request.user.id)
+        context = {
+            'user_authenticated': user_authenticated,
+            'user_name': user_name
+        }
+        return render(request, 'home.html', context)
+
+    context = {
+        'user_authenticated': user_authenticated,
+    }
+
+    return render(request, 'home.html', context)
 
 
 '''def header(request):
@@ -80,8 +101,12 @@ def home(request):
 
 @login_required(login_url='/login/')
 def generate_image(request):
-    global prompt
     user_authenticated = request.user.is_authenticated
+    user_name = User.objects.get(pk=request.user.id)
+    context = {
+        'user_authenticated': user_authenticated,
+        'user_name': user_name
+    }
     if request.method == 'POST':
 
         load_dotenv()
@@ -97,6 +122,7 @@ def generate_image(request):
         card_description = request.POST.get('card-description')
         color = request.POST.get('color')
         type = request.POST.get('type')
+        prompt = ''
 
         if category == 'Weapons':
             weapon_element = request.POST.get('weapon-element')
@@ -108,6 +134,12 @@ def generate_image(request):
             prompt = (
                 f"Give a brief description of a {color} potion"
                 f"named {card_name} imbued with an effect of {type}."
+                f"\nShort description entered by the user (optional): '{card_description}'")
+        elif category == 'Armors':
+            armor_material = request.POST.get('armor-material')
+            prompt = (
+                f"Give a brief description of a {color} {type} armor"
+                f"named {card_name} forged with an material of {armor_material}."
                 f"\nShort description entered by the user (optional): '{card_description}'")
 
 
@@ -127,7 +159,7 @@ def generate_image(request):
             "prompt": final_prompt,
             "negative_prompt": "drawing, painting, crayon, sketch, graphite, impressionist, noisy, blurry, soft, "
                                "deformed, ugly. young. long neck. (cross eyed:1.5). multiple characters, character, "
-                               "person, Letters, names, words, Human being, doll",
+                               "person, Letters, names, words, Human being, doll, face, nose, eyes",
             "samples": 1,
             "scheduler": "Euler a",
             "num_inference_steps": 25,
@@ -200,7 +232,7 @@ def generate_image(request):
 
             return render(request, 'index.html', context)
 
-    return render(request, 'index.html', {'user_authenticated': user_authenticated})
+    return render(request, 'index.html', context)
 
 
 def filter_cards_by_category(request):
@@ -212,6 +244,8 @@ def filter_cards_by_category(request):
         return filter_cards_by_category(request, 'Potions')
     elif filter_value == 'armor':
         return filter_cards_by_category(request, 'Armors')
+    elif filter_value != 'all':
+        return filter_cards_by_category(request, filter_value)
     else:
         return filter_cards_by_category(request, 'all')
 
@@ -221,8 +255,10 @@ def inventory(request, category):
     user = User.objects.get(pk=request.user.id)
     if category == 'all':
         cards = Card.objects.filter(user=user).order_by('power').reverse()
-    else:
+    elif category in ['Armors', 'Weapons', 'Potions']:
         cards = Card.objects.filter(user=user, category=category).order_by('power').reverse()
+    else:
+        cards = Card.objects.filter(user=user, rarity=category).order_by('power').reverse()
 
     best_card = Card.objects.filter(user=user).order_by('power').reverse().first()
     status = Status.objects.filter(card=best_card)
@@ -243,13 +279,16 @@ def inventory(request, category):
         })
 
     user_authenticated = request.user.is_authenticated
+    user_name = User.objects.get(pk=request.user.id)
+
 
     context = {
         'card_data_list': card_data,
         'best_card': best_card,
         'status': status,
         'best_image_base64': best_image_base64,
-        'user_authenticated': user_authenticated
+        'user_authenticated': user_authenticated,
+        'user_name': user_name
     }
 
     return render(request, 'inventory.html', context)
@@ -259,8 +298,10 @@ def inventory(request, category):
 def ranking(request, category):
     if category == 'all':
         cards = Card.objects.all().order_by('power').reverse()
-    else:
+    elif category in ['Armors', 'Weapons', 'Potions']:
         cards = Card.objects.filter(category=category).order_by('power').reverse()
+    else:
+        cards = Card.objects.filter(rarity=category).order_by('power').reverse()
 
     card_data = []
     for card in cards:
@@ -270,6 +311,7 @@ def ranking(request, category):
         image_base64 = base64.b64encode(byte_stream).decode('utf-8')
 
         card_data.append({
+            'user': card.user.username,
             'name': card.name,
             'rarity': card.rarity,
             'image_base64': image_base64,
@@ -282,11 +324,15 @@ def ranking(request, category):
             'status': status,
         })
 
-        user_authenticated = request.user.is_authenticated
+    user_authenticated = request.user.is_authenticated
+    user_name = ''
+    if user_authenticated:
+        user_name = User.objects.get(pk=request.user.id)
 
     context = {
         'ranking_list': card_data,
-        'user_authenticated': user_authenticated
+        'user_authenticated': user_authenticated,
+        'user_name': user_name
     }
 
     return render(request, 'ranking.html', context)

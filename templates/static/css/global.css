@@ -24,8 +24,13 @@ body {
     background-size: cover;
     color: var(--yellow);
     cursor: url("../content/img/cursor2.png"), auto;
-    cursor: url("../content/img/cursor2.png"), pointer;
+    cursor: url("../content/img/cursor2.png"), click;
 }
+
+button:hover, a:hover {
+    cursor: url("../content/img/hand-cursor.png"), pointer;
+}
+
 
 main {
     height: calc(100vh - 80px);
@@ -98,4 +103,18 @@ input:-webkit-autofill {
 
 input:-webkit-autofill {
     -webkit-text-fill-color: var(--yellow) !important;
+}
+
+.card-username {
+    color: white;
+    font-size: 11px;
+    padding: 10px;
+}
+
+.username, .card-username {
+    text-transform: capitalize;
+}
+
+.mini-card-title h3 {
+    max-height: 1px;
 }

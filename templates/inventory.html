@@ -1,42 +1,44 @@
 {% extends 'header.html' %}
 {% load static %}
 
+
 {% block title %}Inventory{% endblock %}
+
 
 {% block header %}
 <!-- Se o usuário estiver autenticado -->
-    {% if user_authenticated %}
-    <!-- Adicione os elementos específicos para usuários autenticados aqui -->
-    <!-- Por exemplo, adicione um link para o perfil do usuário e um botão de logout -->
-    <li><a class="link-select li-inventory" href="/inventory">Inventory</a></li>
-    <li class="dropdown-container">
-        <button class="link-select username"> Username-BR</button>
-    <li class="dropdown-container">
-        <button class="link-select username"> Username-BR</button>
-        <ul class="username-dropdown">
-            <li>
-                <button type="submit" class="btn-edit-profile btn-dropdown">
-                    <img class="temporary-img" src="{% static '/content/img/settings.png' %}" alt="Edit profile icon">
-                    Edit profile
+{% if user_authenticated %}
+<!-- Adicione os elementos específicos para usuários autenticados aqui -->
+<!-- Por exemplo, adicione um link para o perfil do usuário e um botão de logout -->
+<li><a class="link-select li-inventory" href="/inventory">Inventory</a></li>
+<li class="dropdown-container">
+    <button class="link-select username">{{ user_name }}</button>
+    <ul class="username-dropdown">
+        <li>
+            <button type="submit" class="btn-edit-profile btn-dropdown">
+                <img class="temporary-img" src="{% static '/content/img/settings.png' %}" alt="Edit profile icon">
+                Edit profile
+            </button>
+        </li>
+        <li>
+            <form method="POST" action="{% url 'logout' %}" class="link-select form-logout">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout btn-dropdown">
+                    <img class="temporary-img" src="{% static '/content/img/logout.png' %}" alt="Logout icon">
+                    Logout
                 </button>
-            </li>
-            <li>
-                <form method="POST" action="{% url 'logout' %}" class="link-select form-logout">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-logout btn-dropdown">
-                        <img class="temporary-img" src="{% static '/content/img/logout.png' %}" alt="Logout icon">
-                        Logout
-                    </button>
-                </form>
-            </li>
-        </ul>
-    </li>
-    {% else %}
-    <!-- Se o usuário não estiver autenticado -->
-    <!-- Adicione os elementos específicos para usuários não autenticados aqui -->
-    <li><a class="link-select link-selected" href="/login">Log in</a></li>
-    {% endif %}
+            </form>
+        </li>
+    </ul>
+</li>
+{% else %}
+<!-- Se o usuário não estiver autenticado -->
+<!-- Adicione os elementos específicos para usuários não autenticados aqui -->
+<li><a class="link-select link-selected" href="/login">Log in</a></li>
+{% endif %}
 {% endblock %}
+
+
 
 {% block content %}
 <head>
@@ -46,22 +48,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Manipula o clique nos botões de filtro
             $('.filter-button').click(function (e) {
-                e.preventDefault();
                 var filterValue = $(this).data('filter');
-
-                // Envia uma requisição AJAX para a view Django com o filtro selecionado
                 $.ajax({
-                    url: '/inventory/filter_' + filterValue,  // Substitua pela URL da sua view Django
+                    url: '/inventory/filter_' + filterValue,
                     type: 'GET',
                     data: {filter: filterValue},
-
                     success: function () {
-                        // Atualiza a lista de cards filtrados na div 'inventory-list-cards'
                         window.location.href = '/inventory/filter_' + filterValue;
-                        //$('.inventory-list-cards').html(data);
-
                     },
                     error: function () {
                         alert('Erro ao carregar os cards filtrados.');
@@ -72,13 +66,12 @@
 
     </script>
 </head>
-
 <main>
     <section class="section-bestcard">
         <p class="phrase">Your best card is:</p>
         <section class="bestcard">
             <div class="card-background"
-                 style="background-image: url('{% static 'content/frame-ores/'|add:best_card.rarity|add:'.png' %}'); animation: {{ none }};">
+                 style="background-image: url('{% static 'content/frame-ores/'|add:best_card.rarity|add:'.png' %} ');; animation: {{ none }};">
                 <div class="card">
                     <div class="card-header">
                         <h1>{{ best_card.name }}</h1>
@@ -87,7 +80,7 @@
                             {{ best_card.rarity }}
                             <img class="ore-icon ore-icon-header"
                                  src="{% static 'content/img-ores/ore-'|add:best_card.rarity|add:'.png '%}"
-                                 style="animation: {{ none }};">
+                                 style=" animation: {{ none }};">
                         </p>
                     </div>
                     <div class="card-img">
@@ -118,7 +111,7 @@
                                 </div>
                                 <p class="power-number"
                                    style="background: linear-gradient(180deg, rgba(255, 255, 255, 0.91) 0%, {{ color_back }} 64.5%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                                    {{ best_card.power }}</p>
+                                    {{ best_card.power  }}</p>
                             </div>
                         </div>
                         <div class="card-description">
@@ -135,7 +128,6 @@
                 </div>
             </div>
         </section>
-        </div>
         <p class="phrase">Congratulations!</p>
     </section>
 
@@ -162,11 +154,40 @@
                         </li>
                     </ul>
                     <ul class="inventory-orderby">
-                        <li>
-                            <button class="icon-filter opal"></button>
+
+                        <li class="dropdown-rarity">
+                            <button class="icon-filter filter-button filter-ore" data-filter="all"></button>
+
+                            <ul class="ul-dropdown-rarity">
+                                <li>
+                                    <button class="icon-filter filter-button filter-bronze" data-filter="bronze"></button>
+                                </li>
+                                <li>
+                                    <button class="icon-filter filter-button filter-silver" data-filter="silver"></button>
+                                </li>
+                                <li>
+                                    <button class="icon-filter filter-button filter-gold" data-filter="gold"></button>
+                                </li>
+                                <li>
+                                    <button class="icon-filter filter-button filter-emerald" data-filter="emerald"></button>
+                                </li>
+                                <li>
+                                    <button class="icon-filter filter-button filter-diamond" data-filter="diamond"></button>
+                                </li>
+                                <li>
+                                    <button class="icon-filter filter-button filter-ruby" data-filter="ruby"></button>
+                                </li>
+                                <li>
+                                    <button class="icon-filter filter-button filter-obsidian" data-filter="obsidian"></button>
+                                </li>
+                                <li>
+                                    <button class="icon-filter filter-button filter-opal" data-filter="opal"></button>
+                                </li>
+                            </ul>
                         </li>
+
                         <li>
-                            <button class="icon-filter star"></button>
+                            <button class="icon-filter filter-button star"></button>
                         </li>
                     </ul>
                 </div>
@@ -175,11 +196,11 @@
                     <ul class="inventory-list-cards">
 
                         {% for card in card_data_list %}
-                        {% with image_base64=card.image_base64 %}
+                            {% with image_base64=card.image_base64 %}
 
-                        {% include 'mini_card_template.html' with card=card %}
+                            {% include 'mini_card_template.html' with card=card %}
 
-                        {% endwith %}
+                            {% endwith %}
                         {% endfor %}
 
                     </ul>

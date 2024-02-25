@@ -1,43 +1,49 @@
-# RPG Forger
+# RPG Forger 🚀
 This project is an RPG card generator that connects to two APIs: Segmind and OpenAI.
 
 The generated cards are divided into 3 categories: Weapon, Potion, and Armor. Each 
 category has various different types, capable of generating a variety of unique items.
 
-#### Card Forging Screen
-![Card Forging Screen](README/forger.png)
-#### Forged Card Result
-![Forged Card Result](README/forger_result.png)
+### Screenshot: Forged Card Result
+![Card Forging Screen](README/Forged.png)
 
-<!--
-Sumário
-Instalação
-Como usar
-Contribuição
-Licença
-Instalação
-Forneça instruções claras sobre como instalar e configurar o seu projeto. Inclua dependências e requisitos de sistema, se necessário.
+### Screenshot: Inventory Cards
+![Forged Card Result](README/Inventory.png)
 
+### Screenshot: Ranking Cards
+![Card Forging Screen](README/Ranking.png)
 
-# Exemplo de comandos de instalação
-npm install
-Como usar
-Explique como os usuários podem utilizar seu projeto. Forneça exemplos de código e comandos para ilustrar.
+### Video:
+https://github.com/DanielaAlmeiida/django-ia-rpg/assets/104696916/8b29dabc-02a4-48ab-9722-dcf0a58199fd
 
-bash
-Copy code
-# Exemplo de comandos de execução
-npm start
-Contribuição
-Esclareça como outros desenvolvedores podem contribuir para o seu projeto. Forneça orientações sobre o processo de envio de pull requests e informe se há algum guia de estilo de código.
+## Dependências do Projeto 🛠️
+```
+annotated-types==0.6.0
+anyio==4.2.0
+asgiref==3.7.2
+certifi==2023.11.17
+charset-normalizer==3.3.2
+colorama==0.4.6
+distro==1.9.0
+Django==5.0.1
+h11==0.14.0
+httpcore==1.0.2
+httpx==0.26.0
+idna==3.6
+mysqlclient==2.2.1
+openai==1.10.0
+pillow==10.2.0
+pydantic==2.5.3
+pydantic_core==2.14.6
+python-dotenv==1.0.1
+requests==2.31.0
+sniffio==1.3.0
+sqlparse==0.4.4
+tqdm==4.66.1
+typing_extensions==4.9
+```
 
-Faça um fork do projeto
-Crie uma branch para sua feature (git checkout -b feature/nova-feature)
-Faça commit das suas alterações (git commit -am 'Adiciona nova feature')
-Faça push para a branch (git push origin feature/nova-feature)
-Abra um pull request
-Licença
-Indique a licença do seu projeto. Certifique-se de escolher uma licença que seja apropriada para o seu projeto.
-
-MIT License
--->
+# Comandos para execução do projeto ⚙️
+```commandline
+python manage.py runserver
+```
